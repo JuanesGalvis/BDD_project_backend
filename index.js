@@ -6,6 +6,7 @@ const { CheckApiKey } = require('./middleware/auth.handler');
 
 require('./utils/auth/index');
 
+app.use(CORS());
 app.use(express.json());
 
 app.get('/', CheckApiKey, (req, res) => {
