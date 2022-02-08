@@ -10,7 +10,7 @@ app.use(CORS());
 app.use(express.json());
 
 app.get('/imagen', (req, res) => {
-    console.log("IMAGEN DESCARGADA!");
+    console.log(req.headers);
     res.sendFile(__dirname+'/pruebaimages.jpg');
 })
 
