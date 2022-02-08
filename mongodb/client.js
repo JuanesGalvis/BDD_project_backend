@@ -45,7 +45,13 @@ class MongoDB {
 
     createUser(user) {
         return this.connect().then((db) => {
-            return db.collection('users').insertOne(user)
+
+            if (!db.collection('users').findOne({email: user.email})) {
+                return db.collection('users').insertOne(user)
+            } else {
+                return false;
+            }
+
         })
     }
 
@@ -110,31 +116,25 @@ class MongoDB {
         })
     }
 
-    /** NOTAS */
-
-    getOneNote(noteId) {
+    updatePlan(planId, changePlan) {
         return this.connect().then((db) => {
-            return db.collection('notas').find({_id: ObjectId(noteId)}).toArray();
+            return db.collection('planes').updateOne({_id: ObjectId(planId)}, {$set: {...changePlan}})
         })
     }
 
-    createNote(note) {
-        const {
-            nombre,
-            descripcion,
-            porcentaje,
-            nota,
-            id_plan
-        } = note;
+    /** NOTAS */
+
+    createNote(note, planId) {
+
+        let Notas = note.map(nota => {
+            return {
+                ...nota,
+                id_plan: ObjectId(planId)
+            }
+        })
 
         return this.connect().then((db) => {
-            return db.collection('notas').insertOne({
-                nombre,
-                descripcion,
-                porcentaje,
-                nota,
-                id_plan: ObjectId(id_plan)
-            });
+            return db.collection('notas').insertMany(Notas);
         })
     }
 
@@ -147,6 +147,21 @@ class MongoDB {
     deleteNote(noteId) {
         return this.connect().then((db) => {
             return db.collection('notas').deleteOne({_id: ObjectId(noteId)})
+        })
+    }
+
+    updateNote(planId, changeNotes) {
+        return this.connect().then((db) => {
+
+            let newNotes = changeNotes.map(nota => {
+                return {
+                    ...nota,
+                    id_plan: ObjectId(planId)
+                }
+            })
+
+            db.collection('notas').deleteMany({id_plan: ObjectId(planId)});
+            return db.collection('notas').insertMany(newNotes);
         })
     }
 }

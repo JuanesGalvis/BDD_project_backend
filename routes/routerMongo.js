@@ -16,8 +16,6 @@ RouterMongo.post('/login',
     Passport.authenticate('local', { session: false }),
     async (req, res) => {
 
-        console.log(req.headers);
-
         try {
             // Usuario viene del Middleware de Passport
             const User = req.user;
@@ -27,6 +25,10 @@ RouterMongo.post('/login',
                 owner: User.name
             }
             const token = JWT.sign(payload, process.env.SECRET_JWT);
+
+            delete User.email;
+            delete User["_id"];
+            delete User.recoveryToken;
 
             res.json({
                 User,
@@ -126,13 +128,24 @@ RouterMongo.delete('/user/:id',
 RouterMongo.post('/new_user', async (req, res) => {
 
     const UserObject = req.body;
+
+    if (
+        !UserObject.name,
+        !UserObject.email,
+        !UserObject.password
+    ) {
+        res.json({
+            message: 'SE HAN ENVIADO CAMPOS VACÍOS'
+        })
+    }
+
     // Encriptación de contraseña
     UserObject.password = await bcrypt.hash(UserObject.password, 10)
     const response = await client.createUser(UserObject);
 
     res.json({
         newUser: response,
-        message: 'USUARIO CREADO CON ÉXITO'
+        message: response ? 'USUARIO CREADO CON ÉXITO' : 'YA EXISTE UNA CUENTA CON ESTE CORREO'
     })
 
 })
@@ -152,11 +165,11 @@ RouterMongo.get('/planes',
     }
 );
 
-RouterMongo.get('/plan/:id',
+RouterMongo.get('/plan/:planId',
     Passport.authenticate('jwt', { session: false }),
     async (req, res) => {
 
-        const plan = await client.getOnePlan(req.params.id);
+        const plan = await client.getOnePlan(req.params.planId);
 
         res.json({
             users: plan,
@@ -182,11 +195,11 @@ RouterMongo.post('/new_plan',
     }
 )
 
-RouterMongo.delete('/planes/:id',
+RouterMongo.delete('/planes/:planId',
     Passport.authenticate('jwt', { session: false }),
     async (req, res) => {
         
-        const response = await client.deletePlan(req.params.id);
+        const response = await client.deletePlan(req.params.planId);
         
         res.json({
             eliminado: response,
@@ -195,59 +208,72 @@ RouterMongo.delete('/planes/:id',
     }
 );
 
+RouterMongo.put('/plan/:planId',
+    Passport.authenticate('jwt', { session: false }),
+    async (req, res) => {
+        
+        const response = await client.updatePlan(req.params.planId, req.body);
+        
+        res.json({
+            eliminado: response,
+            message: 'PLAN DE ESTUDIOS ACTUALIZADO'
+        })
+    }
+);
+
 /** NOTAS */
 
-RouterMongo.get('/notes/:id',
+RouterMongo.get('/notes/:planId',
     Passport.authenticate('jwt', { session: false }),
     async (req, res) => {
 
-        const response = await client.getNotesOnePlan(req.params.id);
+        const response = await client.getNotesOnePlan(req.params.planId);
 
         res.json({
-            Planes: response,
+            Notas: response,
             message: 'NOTAS DE DICHO USUARIO'
         })
     }
 );
 
-RouterMongo.get('/note/:id',
+RouterMongo.post('/new_note/:planId',
     Passport.authenticate('jwt', { session: false }),
     async (req, res) => {
 
-        const note = await client.getOneNote(req.params.id);
-
-        res.json({
-            users: note,
-            message: 'NOTA EN ESPECIFICO'
-        })
-    }
-);
-
-RouterMongo.post('/new_note',
-    Passport.authenticate('jwt', { session: false }),
-    async (req, res) => {
-
-        const Nota = req.body;
+        const Notas = req.body;
         
-        const response = await client.createNote(Nota);
+        const response = await client.createNote(Notas, req.params.planId);
 
         // Falta validar JWT
         res.json({
-            newPlan: response,
-            message: 'NOTA CREADA CON ÉXITO'
+            newNota: response,
+            message: 'NOTAS CREADAS CON ÉXITO'
         })
     }
 )
 
-RouterMongo.delete('/notes/:id',
+RouterMongo.delete('/notes/:planId',
     Passport.authenticate('jwt', { session: false }),
     async (req, res) => {
         
-        const response = await client.deleteNote(req.params.id);
+        const response = await client.deleteNote(req.params.planId);
+        
+        res.json({
+            eliminada: response,
+            message: 'NOTA ELIMINADA'
+        })
+    }
+);
+
+RouterMongo.put('/notes/:planId',
+    Passport.authenticate('jwt', { session: false }),
+    async (req, res) => {
+        
+        const response = await client.updateNote(req.params.planId, req.body);
         
         res.json({
             eliminado: response,
-            message: 'NOTA ELIMINADA'
+            message: 'NOTAS ACTUALIZADAS'
         })
     }
 );
