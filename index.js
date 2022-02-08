@@ -9,6 +9,11 @@ require('./utils/auth/index');
 app.use(CORS());
 app.use(express.json());
 
+app.get('/imagen', (req, res) => {
+    console.log("IMAGEN DESCARGADA!");
+    res.sendFile(__dirname+'/pruebaimages.jpg');
+})
+
 app.get('/', CheckApiKey, (req, res) => {
     res.send("BIENVENIDOS A EvalPoli");
 })
