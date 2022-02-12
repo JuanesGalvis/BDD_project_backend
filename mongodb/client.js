@@ -46,8 +46,8 @@ class MongoDB {
     createUser(user) {
         return this.connect().then((db) => {
 
-            if (!db.collection('users').findOne({email: user.email})) {
-                return db.collection('users').insertOne(user)
+            if (db.collection('users').findOne({email: user.email})) {
+                return db.collection('users').insertOne(user);
             } else {
                 return false;
             }
