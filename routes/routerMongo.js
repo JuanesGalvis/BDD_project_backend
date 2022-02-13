@@ -63,7 +63,7 @@ RouterMongo.post('/recovery', async (req, res) => {
                     expiresIn: '15min'
                 });
 
-            SendEmail(user, token);
+            await SendEmail(user, token);
 
             const response = await client.setRecoveryToken(user.email, token);
 
