@@ -29,10 +29,13 @@ async function SendEmail(user, token) {
   // send mail with defined transport object
   let info = await new Promise((resolve, reject) => {
     transporter.sendMail({
-      from: process.env.EMAIL_NODEMAILER, // sender address
+      from: {
+        name: 'Pasé Raspando 📝',
+        address: process.env.EMAIL_NODEMAILER
+      }, // sender address
       to: user.email, // list of receivers
-      subject: "PaseRaspando - Recuperación de contraseña", // Subject line
-      html: `<h2>Hola ${user.name}</h2><p>Este correo es para recuperar tu contraseña de PaseRaspando.com 👍🏻</p><p>Ingresa a este link para recuperar la contraseña:👉🏻 https://paseraspando.com/change_password/${token} 👈🏻 </p>`, // html body
+      subject: "PaséRaspando 📝 - Recuperación de contraseña", // Subject line
+      html: `<img src="https://i.postimg.cc/DfbR17z6/Logotipo.jpg" alt="Logotipo" /><h2>Hola 👋🏻 ${user.name}</h2><p>Este correo es para recuperar tu contraseña de Paseraspando.com.com 👍🏻</p><p>Ingresa a este link para recuperar la contraseña:👉🏻 https://paseraspando.vercel.app/change_password?token=${token} 👈🏻 </p>`, // html body
     }, (err, info) => {
       if (err) {
           console.error(err);
