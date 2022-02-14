@@ -13,7 +13,7 @@ RouterSQL.get('/areas', async (req, res) => {
     })
 });
 
-RouterSQL.get('/asignaturas', async (req, res) => {
+RouterSQL.post('/asignaturas', async (req, res) => {
     
     const results = await client.query(`SELECT * FROM asignaturas WHERE programas_codigo = ${req.body.programId}`);
 
