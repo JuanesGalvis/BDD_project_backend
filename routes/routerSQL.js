@@ -15,7 +15,7 @@ RouterSQL.get('/areas', async (req, res) => {
 
 RouterSQL.get('/asignaturas', async (req, res) => {
     
-    const results = await client.query('SELECT * FROM asignaturas');
+    const results = await client.query(`SELECT * FROM asignaturas WHERE programas_codigo = ${req.body.programId}`);
 
     res.json({
         asignaturas: results.rows,
@@ -45,7 +45,7 @@ RouterSQL.get('/departamentos', async (req, res) => {
 
 RouterSQL.get('/empleados', async (req, res) => {
     
-    const results = await client.query('SELECT * FROM empleados');
+    const results = await client.query(`SELECT * FROM empleados WHERE tipo_empleado = 'Profesor' AND identificacion = '${req.body.teacherId}'`);
 
     res.json({
         empleados: results.rows,
@@ -65,7 +65,7 @@ RouterSQL.get('/facultades', async (req, res) => {
 
 RouterSQL.get('/grupos', async (req, res) => {
     
-    const results = await client.query('SELECT * FROM grupos');
+    const results = await client.query(`SELECT * FROM grupos WHERE asignaturas_codigo = '${req.body.signatureId}'`);
 
     res.json({
         grupos: results.rows,
