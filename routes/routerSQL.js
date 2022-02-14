@@ -43,7 +43,7 @@ RouterSQL.get('/departamentos', async (req, res) => {
     })
 });
 
-RouterSQL.get('/empleados', async (req, res) => {
+RouterSQL.post('/empleados', async (req, res) => {
     
     const results = await client.query(`SELECT * FROM empleados WHERE tipo_empleado = 'Profesor' AND identificacion = '${req.body.teacherId}'`);
 
@@ -63,7 +63,7 @@ RouterSQL.get('/facultades', async (req, res) => {
     })
 });
 
-RouterSQL.get('/grupos', async (req, res) => {
+RouterSQL.post('/grupos', async (req, res) => {
     
     const results = await client.query(`SELECT * FROM grupos WHERE asignaturas_codigo = '${req.body.signatureId}'`);
 
