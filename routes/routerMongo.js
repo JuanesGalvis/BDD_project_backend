@@ -140,8 +140,9 @@ RouterMongo.post('/new_user', async (req, res) => {
     }
 
     // Encriptación de contraseña
-    UserObject.password = await bcrypt.hash(UserObject.password, 10)
-    const response = await client.createUser(UserObject);
+    UserObject.password = await bcrypt.hash(UserObject.password, 10);
+    const ExistUser = await client.getOneUser(UserObject);
+    const response = await client.createUser(UserObject, ExistUser);
 
     res.json({
         newUser: response,

@@ -31,27 +31,36 @@ class MongoDB {
     /** LOGIN */
     login(userEmail) {
         return this.connect().then((db) => {
-            return db.collection('users').findOne({email: userEmail});
+            return db.collection('users')
+                .findOne({email: userEmail});
         })
     }
 
     recovery(userEmail, newPassword) {
         return this.connect().then((db) => {
-            return db.collection('users').updateOne({email: userEmail}, {$set: {password: newPassword, recoveryToken: null}})
+            return db.collection('users')
+                .updateOne({email: userEmail},
+                            {$set: {password: newPassword,
+                                    recoveryToken: null}})
         })
     }
 
     /** USUARIOS */
 
-    createUser(user) {
+    getOneUser(user) {
+        return this.connect().then((db) => {
+            return db.collection('users').findOne({email: user.email});
+        })
+    }
+
+    createUser(user, exist) {
         return this.connect().then((db) => {
 
-            if (db.collection('users').findOne({email: user.email})) {
-                return db.collection('users').insertOne(user);
-            } else {
+            if (exist) {
                 return false;
+            } else {
+                return db.collection('users').insertOne(user);
             }
-
         })
     }
 
@@ -77,7 +86,8 @@ class MongoDB {
 
     getOnePlan(planId) {
         return this.connect().then((db) => {
-            return db.collection('planes').find({_id: ObjectId(planId)}).toArray();
+            return db.collection('planes')
+                .find({_id: ObjectId(planId)}).toArray();
         })
     }
 
@@ -106,19 +116,24 @@ class MongoDB {
 
     getAllPlanes(userId) {
         return this.connect().then((db) => {
-            return db.collection('planes').find({"id_owner": ObjectId(userId)}).toArray();
+            return db.collection('planes')
+                .find({"id_owner": ObjectId(userId)}).toArray();
         })
     }
 
     deletePlan(planId) {
         return this.connect().then((db) => {
-            return db.collection('planes').deleteOne({_id: ObjectId(planId)})
+            return db.collection('planes')
+                .deleteOne({_id: ObjectId(planId)})
         })
     }
 
     updatePlan(planId, changePlan) {
         return this.connect().then((db) => {
-            return db.collection('planes').updateOne({_id: ObjectId(planId)}, {$set: {...changePlan}})
+            return db.collection('planes')
+                .updateOne(
+                    {_id: ObjectId(planId)},
+                    {$set: {...changePlan}})
         })
     }
 
@@ -160,8 +175,11 @@ class MongoDB {
                 }
             })
 
-            db.collection('notas').deleteMany({id_plan: ObjectId(planId)});
-            return db.collection('notas').insertMany(newNotes);
+            db.collection('notas')
+                .deleteMany({id_plan: ObjectId(planId)});
+
+            return db.collection('notas')
+                .insertMany(newNotes);
         })
     }
 }
