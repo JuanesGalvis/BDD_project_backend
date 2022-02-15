@@ -49,7 +49,8 @@ class MongoDB {
 
     getOneUser(user) {
         return this.connect().then((db) => {
-            return db.collection('users').findOne({email: user.email});
+            return db.collection('users')
+                .findOne({email: user.email});
         })
     }
 
@@ -59,7 +60,8 @@ class MongoDB {
             if (exist) {
                 return false;
             } else {
-                return db.collection('users').insertOne(user);
+                return db.collection('users')
+                    .insertOne(user);
             }
         })
     }
@@ -123,6 +125,9 @@ class MongoDB {
 
     deletePlan(planId) {
         return this.connect().then((db) => {
+
+            db.collection('notas').deleteMany({id_plan: ObjectId(planId)});
+
             return db.collection('planes')
                 .deleteOne({_id: ObjectId(planId)})
         })
