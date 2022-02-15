@@ -7,7 +7,6 @@ Aplicación para la gestión de planes de estudio y sus notas.
 - ``POST: /login``              -> Iniciar sesión
 - ``POST: /recovery``           -> Correo para recordar contraseña
 - ``POST: /change-password``    -> Nueva contraseña
-#### Usuarios
 - ``DELETE: /user/:id``         -> Eliminar usuario
 #### Planes de estudio
 - ``GET: /planes``              -> Todos los planes de un usuario
@@ -23,12 +22,12 @@ Aplicación para la gestión de planes de estudio y sus notas.
 
 ## 🚩 Rutas - 🐘 PostgreSQL
 - ``GET: /areas``                   
-- ``GET: /asignaturas``                
+- ``POST: /asignaturas``                
 - ``GET: /ciudades``
 - ``GET: /departamentos``
-- ``GET: /empleados``
+- ``POST: /empleados``
 - ``GET: /facultades``
-- ``GET: /grupos``
+- ``POST: /grupos``
 - ``GET: /paises``
 - ``GET: /programas``
 - ``GET: /sedes``
