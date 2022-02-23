@@ -2,19 +2,13 @@ const express = require('express');
 const CORS = require('cors');
 const app = express();
 require('dotenv').config();
-const { CheckApiKey } = require('./middleware/auth.handler');
 
 require('./utils/auth/index');
 
 app.use(CORS());
 app.use(express.json());
 
-app.get('/imagen', (req, res) => {
-    console.log(req.headers);
-    res.sendFile(__dirname+'/pruebaimages.jpg');
-})
-
-app.get('/', CheckApiKey, (req, res) => {
+app.get('/', (req, res) => {
     res.send("BIENVENIDOS A EvalPoli");
 })
 
